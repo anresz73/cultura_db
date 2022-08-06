@@ -1,7 +1,7 @@
 #
 
 import locale
-from cultura_db.constantes import *
+from .constantes import *
 
 locale.setlocale(locale.LC_ALL, 'es_AR.UTF-8')
 
