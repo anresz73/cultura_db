@@ -1,0 +1,11 @@
+# Files
+test.py
+
+# Folders
+/AutoGen
+/venv
+
+# Compilers
+__pycache__/
+*.py[cod]
+*$py.class
