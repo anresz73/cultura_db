@@ -10,12 +10,6 @@ class Cultura_DB:
     Clase
     """
 
-    def __str__(self):
-        return "cines"
-
-    def __repr__(self):
-        return "teatros"
-
     def get_archivos_fuente(self):
         """
         Método para ejecutar archivos_fuente
