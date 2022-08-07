@@ -1,5 +1,6 @@
 #
 
+from genericpath import isdir
 import requests
 import csv
 import os
@@ -12,21 +13,31 @@ def archivos_fuente(csv_dicts):
     In:
     csv_dicts : dict - diccionario con las categorias y las urls de los datos 
     Out: 
-    
+    Crea las carpetas y archivos respectivos
     """
+    # Loop for que trae categorias y urls del diccionario
     for categoria, url in csv_dicts.items():
-        #r = requests.get(url)
-        #r_s = s.get(url_name)
+        # Armado de estructura de rutas y archivos csv con fecha actual
         estructura_ruta = f'./{categoria}/%Y-%B/{categoria}-%d-%m-%Y.csv' #
         path_file = datetime.now().strftime(estructura_ruta).casefold()
-        head, tail = os.path.split(path_file)
-        #with open(file_name, 'w') as f:
-        #    writer = csv.writer(f)
-        #    for line in r.iter_lines():
-        #        writer.writerow(line.decode('utf-8').split(','))
-        print(f'Ruta: {path_file}\nHead: {head}\nTail: {tail}\n')
-        #with requests.Session() as s:
-        #    download = s.get(url)
-        #    decoded_content = download.content.decode('utf-8')
-        #    cr = csv.reader(decoded_content.splitlines(), delimiter = ',')
-        #return list(cr)
+        path_base, file_name = os.path.split(path_file)
+        # Datos del archivo csv usando requests
+        try:
+            r = requests.get(url)
+            if r.status_code == 200:
+                #csv_rows = r.content.decode('utf-8').splitlines()
+                #csv_rows = [[e] for e in r.iter_lines()]
+                csv_rows = csv.reader(r.content.decode('utf-8').splitlines(), delimiter = ',')
+                # Creación de carpeta
+                if not os.path.isdir(path_base):
+                    os.makedirs(path_base)
+                # Creación de archivo csv. Lo reemplaza si ya existe por opción 'w'
+                with open(file_name, 'w') as f:
+                    writer = csv.writer(f, delimiter = ',')
+                    writer.writerows(csv_rows)
+                #print(f'Ruta: {path_file}\nHead: {file_name}\nTail: {path_base}\n')
+            else:
+                raise Exception(f'Error {r.status_code}')
+        except:
+            raise Exception('Error')
+            #OJO customizar después las excepcciones
