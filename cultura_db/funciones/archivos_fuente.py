@@ -1,6 +1,6 @@
 #
 
-from genericpath import isdir
+#from genericpath import isdir
 import requests
 import csv
 import os
@@ -32,7 +32,7 @@ def archivos_fuente(csv_dicts):
                 if not os.path.isdir(path_base):
                     os.makedirs(path_base)
                 # Creación de archivo csv. Lo reemplaza si ya existe por opción 'w'
-                with open(file_name, 'w') as f:
+                with open(path_file, 'w') as f:
                     writer = csv.writer(f, delimiter = ',')
                     writer.writerows(csv_rows)
                 #print(f'Ruta: {path_file}\nHead: {file_name}\nTail: {path_base}\n')
