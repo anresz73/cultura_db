@@ -4,6 +4,9 @@ test.py
 # Folders
 /AutoGen
 /venv
+/bibliotecas
+/cines
+/museos
 
 # Compilers
 __pycache__/

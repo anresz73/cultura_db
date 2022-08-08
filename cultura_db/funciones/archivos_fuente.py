@@ -5,6 +5,7 @@ import requests
 import csv
 import os
 from datetime import datetime
+from cultura_db.funciones import funciones_auxiliares
 
 
 def archivos_fuente(csv_dicts):
@@ -18,8 +19,7 @@ def archivos_fuente(csv_dicts):
     # Loop for que trae categorias y urls del diccionario
     for categoria, url in csv_dicts.items():
         # Armado de estructura de rutas y archivos csv con fecha actual
-        estructura_ruta = f'./{categoria}/%Y-%B/{categoria}-%d-%m-%Y.csv' #
-        path_file = datetime.now().strftime(estructura_ruta).casefold()
+        path_file = funciones_auxiliares._path_file(categoria)
         path_base, file_name = os.path.split(path_file)
         # Datos del archivo csv usando requests
         try:
