@@ -32,3 +32,20 @@ COLUMNAS_RENAMER = {
     'cp' : 'codigo_postal',
     'cod_tel' : 'cod_area'
     }
+
+DTYPES_DICT = {
+    'cod_localidad' : 'str',
+    'id_provincia' : 'int',
+    'id_departamento' : 'int',
+    'categoria' : 'str',
+    'provincia' : 'str',
+    'localidad' : 'str',
+    'nombre' : 'str',
+    'domicilio' : 'str',
+    'piso' : 'str',
+    'codigo_postal' : 'str',
+    'telefono' : 'str',
+    'cod_area' : 'str',
+    'mail' : 'str',
+    'web' : 'str',
+}

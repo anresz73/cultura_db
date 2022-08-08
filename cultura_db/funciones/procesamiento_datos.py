@@ -17,6 +17,9 @@ def procesamiento_datos(list_categorias):
         data = pd.read_csv(funciones_auxiliares._path_file(categoria))
         data.columns = data.columns.str.casefold()
         data = data.rename(columns = COLUMNAS_RENAMER)
+        data = data.astype(DTYPES_DICT)
+        data['domicilio'] = data[['domicilio', 'piso']].apply(' '.join, axis = 1)
+        data['telefono'] = data[['cod_area', 'telefono']].apply(' '.join, axis = 1)
         df_list.append(data)
 
     result = pd.concat(
