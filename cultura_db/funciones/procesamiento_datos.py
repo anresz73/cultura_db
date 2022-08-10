@@ -1,9 +1,11 @@
-#
+# Armado de una función que procese todos los datos provenientes de los archivos csv.
+# Normaliza las columnas, quita acentos, define los tipos de las columnas.
+# Reemplaza nombres de columnas para unificarlas.
+# Finalmente arma tres dataframes para poder ser exportados luegos a las tablas SQL.
 
 import pandas as pd
-from cultura_db.constantes import *
-
-from cultura_db.funciones import funciones_auxiliares
+from ..constantes import *
+from .funciones_auxiliares import _path_file
 
 def procesamiento_datos(list_categorias):
     """
@@ -11,20 +13,33 @@ def procesamiento_datos(list_categorias):
     museos, salas de cine, bibliotecas.
     In:
     list_categorias : list - iter : lista o iterable con las categorias
+    Out:
+    Tupla con los tres DataFrame
     """
     df_list = []
     for categoria in list_categorias:
-        data = pd.read_csv(funciones_auxiliares._path_file(categoria))
-        data.columns = data.columns.str.casefold()
-        data = data.rename(columns = COLUMNAS_RENAMER)
-        data = data.astype(DTYPES_DICT)
-        data['domicilio'] = data[['domicilio', 'piso']].apply(' '.join, axis = 1)
-        data['telefono'] = data[['cod_area', 'telefono']].apply(' '.join, axis = 1)
-        df_list.append(data)
+        df = pd.read_csv(
+            _path_file(categoria),
+            na_values = ['s/d'],
+            converters = {'espacio_INCAA' : lambda x: True if x.casefold() == 'si' else False},
+            )
+        df.columns = df.columns.str.casefold()
+        df = df.rename(columns = COLUMNAS_RENAMER)
+        df = df.astype(DTYPES_DICT)
+        df['domicilio'] = df[['domicilio', 'piso']].apply(' '.join, axis = 1)
+        df['telefono'] = df[['cod_area', 'telefono']].apply(' '.join, axis = 1)
+        df_list.append(df)
 
-    result = pd.concat(
+    dict_result = {k : v for k, v in zip(list_categorias, df_list)}
+
+    result_1 = pd.concat(
         objs = df_list,
         axis = 0
-        )
+        ).loc[:, COLUMNAS]
+    
+    result_2 = None
 
-    return result.loc[:, COLUMNAS]
+    result_3 = dict_result[CATEGORIA_CINES].groupby(dict_result[CATEGORIA_CINES][COLUMNA_AGRUPAR]).agg(
+        AGGREGATOR_DICT)
+
+    return result_1, result_2, result_3

@@ -6,6 +6,11 @@ csv_urls = {
     'bibliotecas' : r'https://datos.cultura.gob.ar/dataset/37305de4-3cce-4d4b-9d9a-fec3ca61d09f/resource/01c6c048-dbeb-44e0-8efa-6944f73715d7/download/biblioteca_popular.csv' 
     }
 
+CATEGORIA_CINES = 'cines'
+COLUMNA_AGRUPAR = 'provincia'
+
+AGGREGATOR_DICT = {'pantallas' : 'sum', 'butacas' : 'sum', 'espacio_incaa' : 'count'}
+
 COLUMNAS = [
     'cod_localidad',
     'id_provincia',
