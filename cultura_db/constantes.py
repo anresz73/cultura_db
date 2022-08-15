@@ -37,6 +37,12 @@ COLUMNAS_RENAMER = {
     'cod_tel' : 'cod_area'
     }
 
+# Diccionario con los tipos para la lectura inicial de los archivos csv
+DTYPES_DICT_READ = {
+    'cod_area' : 'int', #csv_cines / csv_museos
+    'Cod_tel' : 'int', #csv_bibliotecas
+}
+
 # Diccionario con los tipos de cada columna usada
 DTYPES_DICT = {
     'cod_localidad' : 'str',
