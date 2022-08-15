@@ -38,10 +38,9 @@ COLUMNAS_RENAMER = {
     }
 
 # Diccionario con los tipos para la lectura inicial de los archivos csv
-DTYPES_DICT_READ = {
-    'cod_area' : 'int', #csv_cines / csv_museos
-    'Cod_tel' : 'int', #csv_bibliotecas
-}
+merge_type = 'str'
+merge_columnas = ['cod_area', 'Cod_tel', 'Teléfono', 'telefono', 'Dirección', 'Domicilio', 'direccion', 'Piso', 'piso']
+DTYPES_DICT_READ = {col : merge_type for col in merge_columnas}
 
 # Diccionario con los tipos de cada columna usada
 DTYPES_DICT = {
@@ -55,7 +54,7 @@ DTYPES_DICT = {
     'domicilio' : 'str',
     'piso' : 'str',
     'codigo_postal' : 'str',
-    'telefono' : 'str',
+    #'telefono' : 'str',
     'cod_area' : 'str',
     'mail' : 'str',
     'web' : 'str',
@@ -66,7 +65,7 @@ DTYPES_DICT = {
 NA_VALUES = ['s/d']
 # Dict para customizar con función lambda anónima la columna de espacio_INCAA
 CONVERTERS = {'espacio_INCAA' : lambda x: True if x.casefold() == 'si' else False}
-# Columnas a unir, teléfonos y direcciones o domicilios
+# Columnas a unir, teléfonos y direcciones o domicilios. Manteniendo el orden dado en los values.
 COLUMNA_MERGE = {
     'domicilio' : ['domicilio', 'piso'],
     'telefono' : ['cod_area', 'telefono']
@@ -86,5 +85,6 @@ COLUMNA_AGRUPAR = 'provincia'
 # Diccionario que indica que función se aplica en cada caso, sum o count
 AGGREGATOR_DICT = {'pantallas' : 'sum', 'butacas' : 'sum', 'espacio_incaa' : 'sum'}
 #
+ITEMS = 'items'
 CANTIDAD_REGISTROS = 'cantidad_registros'
 
