@@ -9,9 +9,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy_utils import database_exists, create_database
 from os.path import basename
 
-def get_settings():
-    pass
-
+# Funciones
 def get_engine(db_name, db_user, db_password, db_host, db_port):
     """
     Función para conectarse a la base de datos Postgresql con los parámetros pasados
@@ -39,30 +37,7 @@ def get_engine_with_settings():
     """
     return get_engine(db_name = DB_NAME, db_user = DB_USER, db_password = DB_PASSWORD, db_host = DB_HOST, db_port = DB_PORT)
 
-
-def db_execute(sql_stmt, sql_engine):
-    """
-    Función para ejecutar una sentencia SQL
-    Args:
-        sql_stmt (str): SQL query
-        sql_engine (): engine inicializada con función get_engine()
-    """
-    t = text(text = sql_stmt)
-    with sql_engine.connect() as connection:
-        connection.execute(t)
-
-def read_sql_file(sql_file_path):
-    """
-    Función que lee y devuelve archivo .sql
-
-    Args:
-        sql_file_path (str): path del archivo sql
-    """
-    with open(sql_file_path) as file:
-        sql_query = file.read()
-    return sql_query
-
-def write_table():
+def _write_table():
     """
     Escribe las tablas en la base de datos
     """
@@ -91,13 +66,59 @@ def drop_and_create_table():
         if connection is not None:
             connection.close()
 
-def _drop_and_create_table(engine, sql_file_path):
+# Funciones que crean tablas y las escriben
+def db_execute(sql_stmt, sql_engine):
     """
-    
+    Función para ejecutar una sentencia SQL
+    Args:
+        sql_stmt (str): SQL query
+        sql_engine (): engine inicializada con función get_engine()
     """
-    sql_file_name = read_sql_file(sql_file_path)
-    result = engine.execute(sql_file_name)
-    return result
+    #t = text(text = sql_stmt)
+    with sql_engine.connect() as connection:
+        connection.execute(sql_stmt)
+
+def read_sql_file(sql_file_path):
+    """
+    Función que lee y devuelve archivo .sql
+    Args:
+        sql_file_path (str): path del archivo sql
+    """
+    with open(sql_file_path) as file:
+        sql_query = file.read()
+    return sql_query
+
+def _drop_and_create_table(sql_file_path, engine):
+    """
+    Función para crear la base de datos.
+    Borra y crea la base de datos con las sentencias SQL en los archivos sql.
+    Args:
+        engine (sqlalchemy engine): conexión con la base de datos generada con get_engine o get_engine_with setting
+        sql_file_path (str): ruta y nombre del archivo sql
+    """
+    # Usa de función para leer archivo sql.
+    #sql_stmt = read_sql_file(sql_file_path)
+    #result = engine.execute(sql_stmt)
+    #return result
+    db_execute(
+        sql_stmt = read_sql_file(sql_file_path),
+        sql_engine = engine
+        )
+
+def _write_table_from_df(table_name, df_tabla, engine):
+    """
+    Función para escribir en la tabla desde DataFrame usando el método df.to_sql.
+    No escribe el índice y agrega los datos a la tabla, usarlo después de drop_and_create_table con tabla vacía.
+    Args:
+        table_name (str): nombre de la tabla
+        df_tabla (pd.DataFrame): df con los datos de la tabla. 
+        engine (sqlalchemy engine): conexión con la base de datos generada con get_engine o get_engine_with setting
+    """
+    df_tabla.to_sql(table_name,
+                    con = engine,
+                    if_exists = 'append',
+                    index = False
+    )
 
 def write_table(table_name, df_tabla, engine):
     """
@@ -108,24 +129,24 @@ def write_table(table_name, df_tabla, engine):
     _drop_and_create_table(
         engine = engine,
         sql_file_path = _sql_file_path(table_name) # r'./cultura_db/sql/tabla_1.sql'
-        )
+    )
     #_tabla = procesamiento_datos(csv_urls.keys())[0]
     #_tabla_1 = _tabla_1.where(_tabla_1.notnull(), None)
     #table_name = basename(sql_file_path).split('.')[0]
-    df_tabla.to_sql(table_name,
-                    con = engine,
-                    if_exists = 'append',
-                    index = False
+    _write_table_from_df(
+        table_name = table_name,
+        df_tabla = df_tabla,
+        engine = engine
     )
 
-def write_tables(dict_tablas):
+def write_tables(dict_tablas, _engine):
     """
     Función que escribe las tres tablas
     Args:
         dict_tablas (dict) : Diccionario con las tablas provenientes de la función procesamiento de datos
     """
     #_engine = get_engine(db_name = DB_NAME, db_user = DB_USER, db_password = DB_PASSWORD, db_host = DB_HOST, db_port = DB_PORT)
-    _engine = get_engine_with_settings()
+    #_engine = get_engine_with_settings()
     for key, value in dict_tablas.items():
         write_table(
             table_name = key,
