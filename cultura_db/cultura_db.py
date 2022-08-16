@@ -1,15 +1,30 @@
 #
 
 import locale
+import logging
+import os
 from .funciones.funciones_auxiliares import _sql_file_path
 from .funciones.archivos_fuente import archivos_fuente
 from .funciones.procesamiento_datos import procesamiento_datos
 from .funciones.creacion_tablas import get_engine, write_tables, _drop_and_create_table, _write_table_from_df
 from .constantes import *
 from .settings import *
+from .exceptions import *
 
+# Idioma 
 locale.setlocale(locale.LC_ALL, 'es_AR.UTF-8')
 
+# Looging settings
+dir = os.path.dirname(LOGGING_PATH)
+if not os.path.isdir(dir):
+    os.makedirs(dir)
+log = logging.basicConfig(
+    filename = LOGGING_PATH,
+    level = logging.INFO,
+    format = '%(asctime)s - %(levelname)s - %(module)s - %(message)s'
+    )
+
+# Clases
 class Cultura_DB:
     """
     Clase que implementa la carga de archivos fuente, el procesamiento de los datos y la creación y actualizacion de las tablas en la base de datos

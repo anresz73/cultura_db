@@ -4,6 +4,7 @@
 # Finalmente arma tres dataframes para poder ser exportados luegos a las tablas SQL.
 
 import pandas as pd
+import logging
 from os.path import basename
 from ..constantes import *
 from .funciones_auxiliares import _path_file
@@ -55,6 +56,7 @@ def procesamiento_datos(list_categorias):
     # Lista para agregar los tres dfs.
     df_list = []
     for categoria in list_categorias:
+        logging.info(f'Leyendo csv categoría: {categoria}')
         # Lectura del csv
         filepath = _path_file(categoria)
         df = _read_csv_custom(filepath)
@@ -81,6 +83,7 @@ def procesamiento_datos(list_categorias):
     dict_result = {k : v for k, v in zip(list_categorias, df_list)}
     
     # Tabla 1
+    logging.info(f'Tabla 1')
     # Uso de concat para armar la tabla unificada con las columnas seleccionadas
     result_1 = pd.concat(
         objs = df_list,
@@ -88,6 +91,7 @@ def procesamiento_datos(list_categorias):
         ).loc[:, COLUMNAS + [CATEGORIA_FUENTE]]
     
     # Tabla 2
+    logging.info('Tabla 2')
     result_2 = []
     for categoria_registro in [CATEGORIA_FUENTE, CATEGORIA_CATEGORIAS]:
         result_2.append(result_1.groupby(categoria_registro).size())
@@ -100,6 +104,7 @@ def procesamiento_datos(list_categorias):
     result_2.columns = [ITEMS, CANTIDAD_REGISTROS]
 
     # Tabla 3
+    logging.info('Tabla 3')
     # Uso de groupby con el diccionario en la categoría cine y la función agregada definida con valores a contar y sumar
     result_3 = dict_result[CATEGORIA_CINES].groupby(
         dict_result[CATEGORIA_CINES][COLUMNA_AGRUPAR]).agg(

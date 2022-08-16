@@ -10,6 +10,9 @@ csv_urls = {
 # Directorio base para la descarga de los archivos csv
 DIRECTORIO_BASE = 'csv'
 
+#Directorio/Archivo Logging
+LOGGING_PATH = r'./logs/log.txt'
+
 # Lectura csv general
 # List - Nombre de las columnas ordenadas para pasar al df 
 COLUMNAS = [

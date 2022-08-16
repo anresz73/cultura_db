@@ -8,6 +8,7 @@ test.py
 /cines
 /museos
 /csv
+/logs
 
 # Compilers
 __pycache__/

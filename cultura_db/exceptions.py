@@ -3,7 +3,7 @@
 class ArchivosFuenteException(Exception):
     pass
 
-class DbException(Exception):
+class DBException(Exception):
     pass
 
 class ProcesamientoDatosException(Exception):

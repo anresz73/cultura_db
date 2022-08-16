@@ -1,13 +1,13 @@
 #
 
-#from genericpath import isdir
 import requests
 import csv
 import os
+import logging
 from datetime import datetime
 from cultura_db.funciones import funciones_auxiliares
 
-
+#
 def archivos_fuente(csv_dicts):
     """
     Función: trae los datos de archivos csv de la url y los crea localmente siguiendo la estructura definida
@@ -17,12 +17,14 @@ def archivos_fuente(csv_dicts):
     Crea las carpetas y archivos respectivos
     """
     # Loop for que trae categorias y urls del diccionario
+    logging.info('Inicio archivos_fuente()')
     for categoria, url in csv_dicts.items():
         # Armado de estructura de rutas y archivos csv con fecha actual
         path_file = funciones_auxiliares._path_file(categoria)
         path_base, file_name = os.path.split(path_file)
         # Datos del archivo csv usando requests
         try:
+            logging.info(f'Leyendo url: {url}')
             r = requests.get(url)
             if r.status_code == 200:
                 #csv_rows = r.content.decode('utf-8').splitlines()
@@ -37,7 +39,6 @@ def archivos_fuente(csv_dicts):
                     writer.writerows(csv_rows)
                 #print(f'Ruta: {path_file}\nHead: {file_name}\nTail: {path_base}\n')
             else:
-                raise Exception(f'Error {r.status_code}')
+                raise ArchivosFuenteException(f'Error {r.status_code}')
         except:
-            raise Exception('Error')
-            #OJO customizar después las excepcciones
+            raise ArchivosFuenteException('Error')

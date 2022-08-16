@@ -5,6 +5,7 @@ from ..constantes import csv_urls
 from .procesamiento_datos import procesamiento_datos
 from .funciones_auxiliares import _sql_file_path
 import pandas as pd
+import logging
 from sqlalchemy import create_engine, text
 from sqlalchemy_utils import database_exists, create_database
 from os.path import basename
@@ -25,6 +26,7 @@ def get_engine(db_name, db_user, db_password, db_host, db_port):
         Out:
         engine creada
     """
+    logging.info(f'Creando engine de db: {db_name}')
     db_string = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     if not database_exists(db_string):
         create_database(db_string)
@@ -84,6 +86,7 @@ def read_sql_file(sql_file_path):
     Args:
         sql_file_path (str): path del archivo sql
     """
+    logging.info(f'Leyendo sql: {sql_file_path}')
     with open(sql_file_path) as file:
         sql_query = file.read()
     return sql_query
@@ -100,6 +103,7 @@ def _drop_and_create_table(sql_file_path, engine):
     #sql_stmt = read_sql_file(sql_file_path)
     #result = engine.execute(sql_stmt)
     #return result
+    logging.info(f'Creando nueva tabla: {sql_file_path}')
     db_execute(
         sql_stmt = read_sql_file(sql_file_path),
         sql_engine = engine
@@ -114,6 +118,7 @@ def _write_table_from_df(table_name, df_tabla, engine):
         df_tabla (pd.DataFrame): df con los datos de la tabla. 
         engine (sqlalchemy engine): conexión con la base de datos generada con get_engine o get_engine_with setting
     """
+    logging.info(f'Escribiendo tabla desde .to_sql: {table_name}')
     df_tabla.to_sql(table_name,
                     con = engine,
                     if_exists = 'append',
@@ -126,6 +131,7 @@ def write_table(table_name, df_tabla, engine):
     """
     #engine = get_engine(db_name = DB_NAME, db_user = DB_USER, db_password = DB_PASSWORD, db_host = DB_HOST, db_port = DB_PORT)
     #drop_and_create_table()
+    logging.info(f'Creando y escribiendo tabla desde : {table_name}')
     _drop_and_create_table(
         engine = engine,
         sql_file_path = _sql_file_path(table_name) # r'./cultura_db/sql/tabla_1.sql'
