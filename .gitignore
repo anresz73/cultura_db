@@ -7,6 +7,7 @@ test.py
 /bibliotecas
 /cines
 /museos
+/csv
 
 # Compilers
 __pycache__/

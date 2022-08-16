@@ -1,6 +1,7 @@
 # Funciones auxiliares que se usan en más de uno de los compomentes y scripts.
 
 from datetime import datetime
+from ..constantes import DIRECTORIO_BASE
 
 def _path_file(categoria):
     """
@@ -10,13 +11,13 @@ def _path_file(categoria):
     Out: 
     str - con ruta completa de archivo csv
     """
-    estructura_ruta = f'./{categoria}/%Y-%B/{categoria}-%d-%m-%Y.csv'
+    estructura_ruta = f'./{DIRECTORIO_BASE}/{categoria}/%Y-%B/{categoria}-%d-%m-%Y.csv'
     return datetime.now().strftime(estructura_ruta).casefold()
 
-def _sql_file_path(tabla):
+def _sql_file_path(table_name):
     """
     Devuelve el path completo 
     Args:
-        tabla (str): nombre de la tabla
+        table_name (str): nombre de la tabla
     """
-    return f'./cultura_db/sql/{tabla}.sql'
+    return f'./cultura_db/sql/{table_name}.sql'
