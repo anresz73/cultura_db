@@ -3,10 +3,14 @@
 import locale
 import logging
 import os
-from .funciones.funciones_auxiliares import _sql_file_path
-from .funciones.archivos_fuente import archivos_fuente
-from .funciones.procesamiento_datos import procesamiento_datos
-from .funciones.creacion_tablas import get_engine, write_tables, _drop_and_create_table, _write_table_from_df
+from .funciones import (
+    get_engine,
+    _drop_and_create_table,
+    _write_table_from_df,
+    procesamiento_datos,
+    archivos_fuente,
+    _sql_file_path
+    )
 from .constantes import *
 from .settings import *
 from .exceptions import *
@@ -46,7 +50,7 @@ class Cultura_DB:
     def get_engine_with_settings(self):
         """
         Método  para conectarse a la base de datos Postgresql. Si la base de datos no existe la crea.
-        Usa settings de variables de entorno
+        Usa settings de variables de entorno y función get_engine()
         """
         return get_engine(self.db_name, self.db_user, self.db_password, self.db_host, self.db_port)
 
