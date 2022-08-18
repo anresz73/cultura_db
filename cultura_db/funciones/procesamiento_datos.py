@@ -81,7 +81,7 @@ def procesamiento_datos(list_categorias):
 
     # Diccionario con categorias como claves y los dataframes como valores
     dict_result = {k : v for k, v in zip(list_categorias, df_list)}
-    
+
     # Tabla 1
     logging.info(f'Tabla 1')
     # Uso de concat para armar la tabla unificada con las columnas seleccionadas
@@ -89,7 +89,12 @@ def procesamiento_datos(list_categorias):
         objs = df_list,
         axis = 0
         ).loc[:, COLUMNAS + [CATEGORIA_FUENTE]]
-    
+    #print(result_1.info())
+
+    # Diccionario con id_provincia como clave y provincia como valores
+    dict_provincias = result_1.loc[:, [COLUMNA_AGRUPAR, CATEGORIA_PROVINCIA]].drop_duplicates().set_index(COLUMNA_AGRUPAR).to_dict()[CATEGORIA_PROVINCIA]
+    #print(dict_provincias)
+
     # Tabla 2
     logging.info('Tabla 2')
     result_2 = []
@@ -106,10 +111,11 @@ def procesamiento_datos(list_categorias):
     # Tabla 3
     logging.info('Tabla 3')
     # Uso de groupby con el diccionario en la categoría cine y la función agregada definida con valores a contar y sumar
-    result_3 = dict_result[CATEGORIA_CINES].groupby(
-        dict_result[CATEGORIA_CINES][COLUMNA_AGRUPAR]).agg(
-        AGGREGATOR_DICT).reset_index()
-    
+    result_3 = dict_result[CATEGORIA_CINES].groupby(COLUMNA_AGRUPAR, as_index = False).agg(
+        AGGREGATOR_DICT)
+    result_3.loc[:, CATEGORIA_PROVINCIA] = result_3[COLUMNA_AGRUPAR].astype(int).copy().replace(dict_provincias)
+
+    # Armado del diccionario para el retorno de la función
     keys = [f'tabla_{e + 1}' for e in range(3)]
     result = {k : v for k, v in zip(keys, [result_1, result_2, result_3])}
 

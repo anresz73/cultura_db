@@ -5,8 +5,10 @@ import logging
 import os
 from .funciones import (
     get_engine,
+    db_execute,
     _drop_and_create_table,
     _write_table_from_df,
+    read_sql_file,
     procesamiento_datos,
     archivos_fuente,
     _sql_file_path
@@ -93,10 +95,21 @@ class Cultura_DB:
             self.actualizar_tablas(table_name = key, df_tabla = value)
         #write_tables(dict_tablas, _engine)
 
-    def get_sql_file_path(self, table_name):
+    def get_sql_file_path(self, file_name):
         """
         Contruye la ruta para acceder al archivo sql
         Args:
-            table_name (str): nombre de la tabla
+            file_name (str): nombre de la tabla
         """
-        return _sql_file_path(table_name)
+        return _sql_file_path(file_name)
+    
+    def execute_sql(self, sql_file):
+        """
+        Método que ejecura un archivo con código sql
+        Args:
+            sql_file (str): nombre del archivo sql, en la carpeta sql
+        """
+        db_execute(
+            read_sql_file(self.get_sql_file_path(sql_file)),
+            self.engine
+            )

@@ -87,7 +87,7 @@ CATEGORIA_CINES = 'cines'
 CATEGORIA_PROVINCIA = 'provincia'
 CATEGORIA_CATEGORIAS = 'categoria'
 # Columna para ser procesada y contar y sumar pantallas, butacas y espacio_incaa
-COLUMNA_AGRUPAR = 'provincia'
+COLUMNA_AGRUPAR = 'id_provincia'
 # Diccionario que indica que función se aplica en cada caso, sum o count
 AGGREGATOR_DICT = {'pantallas' : 'sum', 'butacas' : 'sum', 'espacio_incaa' : 'sum'}
 #
