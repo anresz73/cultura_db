@@ -5,9 +5,10 @@
 
 import pandas as pd
 import logging
-from os.path import basename
+from os.path import basename, split, exists
 from ..constantes import *
 from .funciones_auxiliares import _path_file
+from ..exceptions import ProcesamientoDatosException
 
 # Funciones específicas para usar en el procesamiento de datos
 def _read_csv_custom(filepath):
@@ -59,7 +60,10 @@ def procesamiento_datos(list_categorias):
         logging.info(f'Leyendo csv categoría: {categoria}')
         # Lectura del csv
         filepath = _path_file(categoria)
-        df = _read_csv_custom(filepath)
+        if not exists(filepath):
+            raise ProcesamientoDatosException(f'No existe la ruta {filepath}')
+        else:
+            df = _read_csv_custom(filepath)
         # Limpieza y normalización de columnas
         df.columns = df.columns.str.casefold()
         df.columns = df.columns.map(lambda x: x.translate(TRANSLATE))

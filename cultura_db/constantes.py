@@ -7,12 +7,6 @@ csv_urls = {
     'bibliotecas' : r'https://datos.cultura.gob.ar/dataset/37305de4-3cce-4d4b-9d9a-fec3ca61d09f/resource/01c6c048-dbeb-44e0-8efa-6944f73715d7/download/biblioteca_popular.csv' 
     }
 
-# Directorio base para la descarga de los archivos csv
-DIRECTORIO_BASE = 'csv'
-
-#Directorio/Archivo Logging
-LOGGING_PATH = r'./logs/log.txt'
-
 # Lectura csv general
 # List - Nombre de las columnas ordenadas para pasar al df 
 COLUMNAS = [

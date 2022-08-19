@@ -52,13 +52,15 @@ class Cultura_DB:
     def get_engine_with_settings(self):
         """
         Método  para conectarse a la base de datos Postgresql. Si la base de datos no existe la crea.
-        Usa settings de variables de entorno y función get_engine()
+        Usa settings de las variables de entorno y función get_engine()
         """
         return get_engine(self.db_name, self.db_user, self.db_password, self.db_host, self.db_port)
 
     def crear_archivos_fuente(self):
         """
         Método para descargar las fuentes y descargarlas como csv con formato categoria-fecha.
+        Trae los datos de archivos csv de la url y los crea localmente siguiendo la estructura definida en los csv
+        Directorio base 
         """
         archivos_fuente(self.csv_urls)
 
@@ -93,6 +95,7 @@ class Cultura_DB:
         for key, value in dict_datos.items():
             self.crear_tablas(sql_file_path = self.get_sql_file_path(key))
             self.actualizar_tablas(table_name = key, df_tabla = value)
+        self.execute_sql('foreing_key')
         #write_tables(dict_tablas, _engine)
 
     def get_sql_file_path(self, file_name):

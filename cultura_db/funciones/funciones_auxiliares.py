@@ -1,7 +1,7 @@
 # Funciones auxiliares que se usan en más de uno de los compomentes y scripts.
 
 from datetime import datetime
-from ..constantes import DIRECTORIO_BASE
+from ..settings import DIRECTORIO_BASE
 
 def _path_file(categoria):
     """

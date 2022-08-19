@@ -1,5 +1,8 @@
 # Files
 test.py
+delete_table.sql
+constraint.sql
+fk.sql
 
 # Folders
 /AutoGen

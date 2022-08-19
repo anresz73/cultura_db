@@ -9,6 +9,7 @@ from ..settings import *
 from ..constantes import csv_urls
 from .procesamiento_datos import procesamiento_datos
 from .funciones_auxiliares import _sql_file_path
+from ..exceptions import DBException
 
 ################################################################
 # Funciones usadas en la clase Cultura_DB
@@ -32,7 +33,10 @@ def get_engine(db_name, db_user, db_password, db_host, db_port):
     logging.info(f'Creando engine de db: {db_name}')
     db_string = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     if not database_exists(db_string):
-        create_database(db_string)
+        try:
+            create_database(db_string)
+        except:
+            raise DBException(f'Error en la creación de la base de datos.')
     db_engine = create_engine(db_string)
     return db_engine
 
@@ -100,7 +104,7 @@ def _write_table_from_df(table_name, df_tabla, engine):
 
 def drop_and_create_table():
     """
-    Función que usa raw_conexion, cursor y sql queries directas para re
+    Función que usa raw_conexion, cursor y sql queries directas.
     """
     _file_name = r'./cultura_db/sql/tabla_1.sql'
     _engine = get_engine(db_name = DB_NAME, db_user = DB_USER, db_password = DB_PASSWORD, db_host = DB_HOST, db_port = DB_PORT)

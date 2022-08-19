@@ -6,3 +6,5 @@ FOREIGN KEY (id_provincia) REFERENCES tabla_3 (id_provincia)
 DROP TABLE IF EXISTS tabla_3;
 
 DROP TABLE IF EXISTS tabla_3;
+
+DELETE FROM tabla_3 

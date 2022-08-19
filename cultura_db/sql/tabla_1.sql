@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS tabla_1;
-CREATE TABLE tabla_1 (
+DROP TABLE IF EXISTS tabla_1 CASCADE;
+CREATE TABLE IF NOT EXISTS tabla_1 (
     cod_localidad VARCHAR(10),
     id_provincia INTEGER,
     id_departamento INTEGER,
