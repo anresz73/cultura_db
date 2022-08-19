@@ -27,7 +27,7 @@ def get_engine(db_name, db_user, db_password, db_host, db_port):
         db_password (str): Password
         db_host (str): Host
         db_port (int): Puerto que usa la bd
-        Out:
+        Out: 
         engine creada
     """
     logging.info(f'Creando engine de db: {db_name}')
@@ -45,6 +45,7 @@ def read_sql_file(sql_file_path):
     Función que lee y devuelve archivo .sql
     Args:
         sql_file_path (str): path del archivo sql
+        Out: str - sentencia sql
     """
     logging.info(f'Leyendo sql: {sql_file_path}')
     if not exists(sql_file_path):
@@ -60,8 +61,8 @@ def db_execute(sql_stmt, sql_engine):
     Args:
         sql_stmt (str): SQL query
         sql_engine (): engine inicializada con función get_engine()
+    Ejecuta la sentencia
     """
-    #t = text(text = sql_stmt)
     with sql_engine.connect() as connection:
         connection.execute(sql_stmt)
 
@@ -73,12 +74,9 @@ def _drop_and_create_table(sql_file_path, engine):
         engine (sqlalchemy engine): conexión con la base de datos generada con get_engine o get_engine_with setting
         sql_file_path (str): ruta y nombre del archivo sql
     """
-    # Usa de función para leer archivo sql.
-    #sql_stmt = read_sql_file(sql_file_path)
-    #result = engine.execute(sql_stmt)
-    #return result
     logging.info(f'Creando nueva tabla: {sql_file_path}')
     db_execute(
+        # Función read_sql_file creada antes
         sql_stmt = read_sql_file(sql_file_path),
         sql_engine = engine
         )

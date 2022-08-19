@@ -8,6 +8,7 @@ csv_urls = {
     }
 
 # Lectura csv general
+# Constantes configuradas para el procesamiento y limpiezo de los DFs.
 # List - Nombre de las columnas ordenadas para pasar al df 
 COLUMNAS = [
     'cod_localidad',
@@ -72,6 +73,7 @@ COLUMNA_MERGE = {
 }
 # Filtrado de acentos
 TRANSLATE = str.maketrans('áéíóú', 'aeiou')
+
 # Nombre columna fuentes
 CATEGORIA_FUENTE = 'fuente'
 

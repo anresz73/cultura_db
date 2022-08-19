@@ -16,6 +16,7 @@ def _read_csv_custom(filepath):
     Funcion customizada para la lectura de los archivos csv.
     Args:
         filepath (str): ruta y nombre de archivo csv
+    Out: pd.DataFrame leído
     """
     if not exists(filepath):
         raise ProcesamientoDatosException(f'No existe la ruta {filepath}')
@@ -41,6 +42,7 @@ def _custom_merge(df_datos, columna, list_columnas):
         df_datos (DataFrame): df con los dos campos de datos a ser unidos
         columna (str): nombre de la columna para crear
         list_columnas (list): nombres de las dos columnas
+    Out: pd.DataFrame
     """
     if not all([e in df_datos.columns for e in list_columnas]):
         raise ProcesamientoDatosException(f'Nombre de columnas no incluídos en df.')
@@ -75,13 +77,10 @@ def procesamiento_datos(list_categorias):
         # Normalizar columnas específicas - Provincias con y sin acentos
         df[CATEGORIA_PROVINCIA] = df[CATEGORIA_PROVINCIA].map(lambda x: x.translate(TRANSLATE)).str.casefold()
         # Asignación de tipos específicos - Uso de método convert_dtypes en vez de customizar todas los tipos por columna
-        #df = df.astype(DTYPES_DICT)
         df = df.convert_dtypes()
         # Loop for para unir las columnas indicadas (teléfono, dirección o domicilio)
         for key, value in COLUMNA_MERGE.items():
             df[key] = _custom_merge(df, key, value)
-            #df[key] = df[value].apply(' '.join, axis = 1)
-            #df['telefono'] = df[['cod_area', 'telefono']].apply(' '.join, axis = 1)
         # Agrega columna con la fuente (nombre del archivo csv)
         df[CATEGORIA_FUENTE] = basename(filepath)
         # Se agrega el dataframe a la lista
@@ -94,7 +93,6 @@ def procesamiento_datos(list_categorias):
         objs = df_list,
         axis = 0
         ).loc[:, COLUMNAS + [CATEGORIA_FUENTE]]
-    #print(result_1.info())
 
     # Diccionarios 
     # Con id_provincia como clave y provincia como valores
