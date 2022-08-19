@@ -4,11 +4,11 @@ import pandas as pd
 import logging
 from sqlalchemy import create_engine, text
 from sqlalchemy_utils import database_exists, create_database
-from os.path import basename
-from ..settings import *
-from ..constantes import csv_urls
+from os.path import basename, exists
 from .procesamiento_datos import procesamiento_datos
 from .funciones_auxiliares import _sql_file_path
+from ..settings import *
+from ..constantes import csv_urls
 from ..exceptions import DBException
 
 ################################################################
@@ -35,8 +35,8 @@ def get_engine(db_name, db_user, db_password, db_host, db_port):
     if not database_exists(db_string):
         try:
             create_database(db_string)
-        except:
-            raise DBException(f'Error en la creación de la base de datos.')
+        except Exception as e:
+            raise DBException(f'Error en la creación de la base de datos. Detalle: {e}.')
     db_engine = create_engine(db_string)
     return db_engine
 
@@ -47,6 +47,8 @@ def read_sql_file(sql_file_path):
         sql_file_path (str): path del archivo sql
     """
     logging.info(f'Leyendo sql: {sql_file_path}')
+    if not exists(sql_file_path):
+        raise DBException(f'No existe archivo {sql_file_path}')
     with open(sql_file_path) as file:
         sql_query = file.read()
     return sql_query

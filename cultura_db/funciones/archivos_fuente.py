@@ -6,6 +6,7 @@ import os
 import logging
 from datetime import datetime
 from cultura_db.funciones import funciones_auxiliares
+from ..exceptions import ArchivosFuenteException
 
 #
 def archivos_fuente(csv_dicts):
@@ -40,5 +41,5 @@ def archivos_fuente(csv_dicts):
                 #print(f'Ruta: {path_file}\nHead: {file_name}\nTail: {path_base}\n')
             else:
                 raise ArchivosFuenteException(f'Error {r.status_code}')
-        except:
-            raise ArchivosFuenteException('Error')
+        except Exception as e:
+            raise ArchivosFuenteException(f'Error: {e}')

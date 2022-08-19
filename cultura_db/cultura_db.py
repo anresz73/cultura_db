@@ -49,6 +49,10 @@ class Cultura_DB:
         # Constantes
         self.csv_urls = csv_urls
 
+        # Logging Inicial
+        logging.info(f'####### Log inicial ####### DB : {self.db_name}')
+
+
     def get_engine_with_settings(self):
         """
         Método  para conectarse a la base de datos Postgresql. Si la base de datos no existe la crea.
@@ -105,7 +109,7 @@ class Cultura_DB:
             file_name (str): nombre de la tabla
         """
         return _sql_file_path(file_name)
-    
+
     def execute_sql(self, sql_file):
         """
         Método que ejecura un archivo con código sql

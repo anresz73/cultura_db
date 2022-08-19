@@ -6,17 +6,19 @@
 import pandas as pd
 import logging
 from os.path import basename, split, exists
-from ..constantes import *
 from .funciones_auxiliares import _path_file
+from ..constantes import *
 from ..exceptions import ProcesamientoDatosException
 
 # Funciones específicas para usar en el procesamiento de datos
 def _read_csv_custom(filepath):
     """
-    Funcion totalmente customizada para la lectura de los archivos csv.
-    In:
-    filepath : str - ruta y nombre de archivo csv
+    Funcion customizada para la lectura de los archivos csv.
+    Args:
+        filepath (str): ruta y nombre de archivo csv
     """
+    if not exists(filepath):
+        raise ProcesamientoDatosException(f'No existe la ruta {filepath}')
     df_csv = pd.read_csv(
         # uso funcion auxiliar de armado de ruta y nombre archivo
         filepath,
@@ -27,16 +29,21 @@ def _read_csv_custom(filepath):
         # Funciones para aplicar en determinadas columnas
         converters = CONVERTERS,
         )
+    # Sanity check
+    if df_csv.columns.size < 2:
+        raise ProcesamientoDatosException(f'Error de fuente {filepath}.')
     return df_csv
 
 def _custom_merge(df_datos, columna, list_columnas):
     """
     Funcion que devuelve df de dos columnas unidas manteniendo los valores originales nan.
-
     Args:
         df_datos (DataFrame): df con los dos campos de datos a ser unidos
+        columna (str): nombre de la columna para crear
         list_columnas (list): nombres de las dos columnas
     """
+    if not all([e in df_datos.columns for e in list_columnas]):
+        raise ProcesamientoDatosException(f'Nombre de columnas no incluídos en df.')
     df_datos = df_datos.loc[:, list_columnas].copy()
     mask = df_datos.notna().all(axis = 1)
     df_datos[columna].loc[mask] = df_datos.loc[mask].apply(' '.join, axis = 1)
@@ -60,10 +67,7 @@ def procesamiento_datos(list_categorias):
         logging.info(f'Leyendo csv categoría: {categoria}')
         # Lectura del csv
         filepath = _path_file(categoria)
-        if not exists(filepath):
-            raise ProcesamientoDatosException(f'No existe la ruta {filepath}')
-        else:
-            df = _read_csv_custom(filepath)
+        df = _read_csv_custom(filepath)
         # Limpieza y normalización de columnas
         df.columns = df.columns.str.casefold()
         df.columns = df.columns.map(lambda x: x.translate(TRANSLATE))
@@ -83,11 +87,8 @@ def procesamiento_datos(list_categorias):
         # Se agrega el dataframe a la lista
         df_list.append(df)
 
-    # Diccionario con categorias como claves y los dataframes como valores
-    dict_result = {k : v for k, v in zip(list_categorias, df_list)}
-
     # Tabla 1
-    logging.info(f'Tabla 1')
+    logging.info(f'Procesando Tabla 1')
     # Uso de concat para armar la tabla unificada con las columnas seleccionadas
     result_1 = pd.concat(
         objs = df_list,
@@ -95,16 +96,18 @@ def procesamiento_datos(list_categorias):
         ).loc[:, COLUMNAS + [CATEGORIA_FUENTE]]
     #print(result_1.info())
 
-    # Diccionario con id_provincia como clave y provincia como valores
+    # Diccionarios 
+    # Con id_provincia como clave y provincia como valores
+    dict_result = {k : v for k, v in zip(list_categorias, df_list)}
+    # Con id_provincia como clave y provincia como valores
     dict_provincias = result_1.loc[:, [COLUMNA_AGRUPAR, CATEGORIA_PROVINCIA]].drop_duplicates().set_index(COLUMNA_AGRUPAR).to_dict()[CATEGORIA_PROVINCIA]
-    #print(dict_provincias)
 
     # Tabla 2
-    logging.info('Tabla 2')
+    logging.info('Procesando Tabla 2')
     result_2 = []
     for categoria_registro in [CATEGORIA_FUENTE, CATEGORIA_CATEGORIAS]:
         result_2.append(result_1.groupby(categoria_registro).size())
-    #
+    # Chequear la tabla que se busca obtener!!!!!!!
     df_aux = result_1.groupby([CATEGORIA_PROVINCIA, CATEGORIA_CATEGORIAS], as_index = True).size()
     idx = [f'{e[0]}-{e[1]}' for e in df_aux.index]
     df_aux.index = idx
@@ -113,7 +116,7 @@ def procesamiento_datos(list_categorias):
     result_2.columns = [ITEMS, CANTIDAD_REGISTROS]
 
     # Tabla 3
-    logging.info('Tabla 3')
+    logging.info('Procesando Tabla 3')
     # Uso de groupby con el diccionario en la categoría cine y la función agregada definida con valores a contar y sumar
     result_3 = dict_result[CATEGORIA_CINES].groupby(COLUMNA_AGRUPAR, as_index = False).agg(
         AGGREGATOR_DICT)
