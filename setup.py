@@ -11,5 +11,5 @@ setup(
         'cultura_db/funciones',
         'cultura_db/sql',
     ],
-    #install_requires = []
+    include_package_data = True
 )
