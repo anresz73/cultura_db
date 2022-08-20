@@ -2,6 +2,7 @@
 # Normaliza las columnas, quita acentos, define los tipos de las columnas.
 # Reemplaza nombres de columnas para unificarlas.
 # Finalmente arma tres dataframes para poder ser exportados luegos a las tablas SQL.
+# Falta Mmnejo de excepciones más detallado con columnas, filas y procesamientos.
 
 import pandas as pd
 import logging

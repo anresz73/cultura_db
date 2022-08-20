@@ -7,9 +7,10 @@ setup(
     download_url = 'https://github.com/anresz73/cultura_db',
     description = 'Proyecto que trae datos desde archivos sql, procesa y construye base de datos Postgresql.',
     packages = [
+        '',
         'cultura_db', 
-        'cultura_db/funciones',
-        'cultura_db/sql',
+        'cultura_db.funciones',
+        'cultura_db.sql',
     ],
     include_package_data = True
 )
