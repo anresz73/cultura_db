@@ -52,6 +52,12 @@ class Cultura_DB:
         # Logging Inicial
         logging.info(f'####### Log inicial ####### DB : {self.db_name}')
 
+    def __str__(self):
+        """
+        Salida de representación de cadena del objeto creado con la clase
+        """
+        cadena = f'Clase: {__class__.__name__}.\nConexión: {self.engine}\n'
+        return cadena
 
     def get_engine_with_settings(self):
         """
@@ -99,8 +105,8 @@ class Cultura_DB:
         for key, value in dict_datos.items():
             self.crear_tablas(sql_file_path = self.get_sql_file_path(key))
             self.actualizar_tablas(table_name = key, df_tabla = value)
+        # Primay y Foreing keys
         self.execute_sql('foreing_key')
-        #write_tables(dict_tablas, _engine)
 
     def get_sql_file_path(self, file_name):
         """
