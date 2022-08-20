@@ -23,8 +23,14 @@ $ pip install -r requirements.txt
 ## Base de Datos
 Opción con docker. Se puede descargar PostgreSQL desde https://www.postgresql.org/download/ también e instalarlo localmente.
 ```sh
+$ docker pull postgres
 $ docker run --name local-postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
 ```
+Para dejar de correr el contenedor de docker:
+```sh
+$ docker stop local-postgres
+```
+
 #### Ejemplo
 ```python
 import cultura_db
